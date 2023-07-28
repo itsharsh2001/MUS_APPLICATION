@@ -1,0 +1,10 @@
+.main{
+  display:flex;
+  flex-direction:row;
+  justify-content:space-between;
+  align-items:center;
+  height: calc(100vh - 65px)!important;
+  padding-left: 0.7%;
+  padding-right: 0.7%;
+  width: auto;
+}
