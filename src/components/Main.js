@@ -95,7 +95,7 @@ function Main() {
         
       // ],
       [
-        { v: "First, we take a random number between 0 and sampling interval.\n  Once the random number is selected, we loop through the amount column and\n keep subtracting the value from the random number.\n If that number is less than 0, we select that sample and add sampling interval to that value.\nThis process is repeated till we loop through all the values in the file.", t: "s", s: { alignment: { wrapText: true } } },
+        { v: "First, we take a random number between 0 and sampling interval.\nOnce the random number is selected, we loop through the amount column and\nkeep subtracting the value from the random number.\nIf that number is less than 0, we select that sample and add sampling interval to that value.\nThis process is repeated till we loop through all the values in the file.", t: "s", s: { alignment: { wrapText: true } } },
       ],
       [
         "Date and time when the request was processed",
@@ -373,6 +373,8 @@ function Main() {
       // runDhruvMUS1(uniqueIdentifiers, populationArray, samplingInterval);
     }
 
+    
+
     const sumOfValues = populationArray.reduce((accumulator, currentValue) => {
       const numericValue = Number(currentValue);
       if (!isNaN(numericValue)) {
@@ -389,6 +391,18 @@ function Main() {
     if (Number(samplesize) > populationArray.length) {
       alert(`Number of samples cannot be greater than no. of rows`);
       return;
+    }
+
+     const sumOfValues = populationArray.reduce((accumulator, currentValue) => {
+      const numericValue = Number(currentValue);
+      if (!isNaN(numericValue)) {
+        return accumulator + numericValue;
+      }
+      return accumulator;
+    }, 0);
+    
+    if (sumOfValues/ samplingIntervalForPTag> populationArray.length ) {
+      alert("Expected number of samples based on samplinv interval cannot be greater than number of rows.");
     }
 
     setSamplingIntervalForPTag(samplingInterval);
@@ -420,6 +434,18 @@ function Main() {
     if (isNaN(samplingInterval) || samplingInterval <= 0) {
       alert("Sampling Interval must be a positive number.");
       return;
+    }
+
+    const sumOfValues = populationArray.reduce((accumulator, currentValue) => {
+      const numericValue = Number(currentValue);
+      if (!isNaN(numericValue)) {
+        return accumulator + numericValue;
+      }
+      return accumulator;
+    }, 0);
+    
+    if (sumOfValues/ samplingIntervalForPTag> populationArray.length ) {
+      alert("Expected number of samples based on samplinv interval cannot be greater than number of rows.");
     }
 
     setFinalArray(populationArray);
