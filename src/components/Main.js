@@ -393,13 +393,13 @@ function Main() {
       return;
     }
 
-     const sumOfValues = populationArray.reduce((accumulator, currentValue) => {
-      const numericValue = Number(currentValue);
-      if (!isNaN(numericValue)) {
-        return accumulator + numericValue;
-      }
-      return accumulator;
-    }, 0);
+    //  const sumOfValues = populationArray.reduce((accumulator, currentValue) => {
+    //   const numericValue = Number(currentValue);
+    //   if (!isNaN(numericValue)) {
+    //     return accumulator + numericValue;
+    //   }
+    //   return accumulator;
+    // }, 0);
     
     if (sumOfValues/ samplingIntervalForPTag> populationArray.length ) {
       alert("Expected number of samples based on samplinv interval cannot be greater than number of rows.");
