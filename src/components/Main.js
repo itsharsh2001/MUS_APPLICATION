@@ -28,6 +28,11 @@ function Main() {
     // console.log(data);
   }, [data]);
 
+  function twoDigitRoundAndAddingCommas(number) {
+    return (Math.ceil(number*100)/100).toLocaleString()
+    
+  }
+
   // useEffect(() => {
   //   // Check if a file is already selected in the input field
   //   if (fileInputRef.current && fileInputRef.current.files.length > 0) {
@@ -38,23 +43,24 @@ function Main() {
   // }, []);
 
   const runDhruvMUS1 = async (identifier, amounts, samplingInterval) => {
-    // console.log("sampling interval = ", samplingInterval);
+    console.log("sampling interval = ", samplingInterval);
     try {
       const randomNumber = generateRandomNumber(samplingInterval);
-      // console.log(identifier);
-      // console.log(samplingInterval);
-      // console.log(amounts);
+      console.log('identifier',identifier);
+      console.log('sampling interval',samplingInterval);
+      console.log('amounts',amounts);
 
-      identifier.shift();
-      amounts.shift();
+      // identifier.shift();
+      // amounts.shift();
+      // console.log('shifted amounts', amounts);
       const mus1Result = DhruvMUS1(
         identifier,
         samplingInterval,
         amounts,
         randomNumber
       );
-      // console.log("Random Number:", randomNumber);
-      // console.log("DhruvMUS1 Result:", mus1Result);
+      console.log("Random Number:", randomNumber);
+      console.log("DhruvMUS1 Result:", mus1Result);
 
       //create excel workbook
 
@@ -104,24 +110,24 @@ function Main() {
       ["User Input: File", fileName],
       ["User Input: Unique Identifier Column Name", uniqueIdentifier],
       ["User Input: Value/Amount Column Name", populationColumn],
-      ["User Input: Number of Samples", samplesize],
-      ["User Input: Sampling Interval", samplingInterval],
+      ["User Input: Number of Samples", twoDigitRoundAndAddingCommas(samplesize)],
+      ["User Input: Sampling Interval", twoDigitRoundAndAddingCommas(samplingInterval)],
       [
         "Total value of the population",
-        amounts.reduce((accumulator, currentValue) => {
+        twoDigitRoundAndAddingCommas(amounts.reduce((accumulator, currentValue) => {
           const numericValue = Number(currentValue);
           if (!isNaN(numericValue)) {
             return accumulator + numericValue;
           }
           return accumulator;
-        }, 0),
+        }, 0)),
       ],
-      ["Number of Samples Selected by the utility", mus1Result.length],
+      ["Number of Samples Selected by the utility", twoDigitRoundAndAddingCommas(mus1Result.length)],
       [
         "Deviation between user provided number of samples and the number of samples selected by the utility (in percentage)",
-        `${((mus1Result.length - samplesize) / samplesize) * 100}%`,
+        `${twoDigitRoundAndAddingCommas(((mus1Result.length - samplesize) / samplesize) * 100)}%`,
       ],
-      ["Initial Random Number Generated i.e. Starting Point", randomNumber],
+      ["Initial Random Number Generated i.e. Starting Point", twoDigitRoundAndAddingCommas(randomNumber)],
     ];
 
     
@@ -207,7 +213,9 @@ function Main() {
     // Add an initial empty page to the PDF
     pdfDoc.addPage();
     console.log("createpdf3");
-    const { width, height } = pdfDoc.getPage(0).getSize();
+    let { width, height } = pdfDoc.getPage(0).getSize();
+    width+=height*3
+    height+=width*4
     console.log("createpdf4");
     const fontSize = 12;
     console.log("createpdf5");
@@ -315,11 +323,13 @@ function Main() {
         },
         0
       );
+      console.log(sumOfValues, 'sumof valus in calculate expected samples funciton');
       const expectedamountofSamples = Math.ceil(sumOfValues / interval);
-      // console.log("Read this important", sumOfValues, expectedamountofSamples);
+      console.log("Read this important", sumOfValues, expectedamountofSamples);
       setExpectedSamples(() => {
         return expectedamountofSamples;
       });
+      console.log(expectedSamples, 'expected samples state valiable ki value');
     }
   };
 
@@ -373,8 +383,6 @@ function Main() {
       // runDhruvMUS1(uniqueIdentifiers, populationArray, samplingInterval);
     }
 
-    
-
     const sumOfValues = populationArray.reduce((accumulator, currentValue) => {
       const numericValue = Number(currentValue);
       if (!isNaN(numericValue)) {
@@ -389,20 +397,8 @@ function Main() {
     }
 
     if (Number(samplesize) > populationArray.length) {
-      alert(`Number of samples cannot be greater than no. of rows`);
+      alert(`Number of samples cannot be greater than number of rows`);
       return;
-    }
-
-    //  const sumOfValues = populationArray.reduce((accumulator, currentValue) => {
-    //   const numericValue = Number(currentValue);
-    //   if (!isNaN(numericValue)) {
-    //     return accumulator + numericValue;
-    //   }
-    //   return accumulator;
-    // }, 0);
-    
-    if (sumOfValues/ samplingIntervalForPTag> populationArray.length ) {
-      alert("Expected number of samples based on samplinv interval cannot be greater than number of rows.");
     }
 
     setSamplingIntervalForPTag(samplingInterval);
@@ -410,6 +406,8 @@ function Main() {
     setReportDownload(() => {
       return true;
     });
+
+    console.log(sumOfValues, 'sum of values after confirm button push');
   };
 
   const handleFinalizeArray = () => {
@@ -427,7 +425,7 @@ function Main() {
     }
 
     if (uniqueIdentifiers.length !== populationArray.length) {
-      alert("Identifier and population column must be the same length.");
+      alert("Identifier and population column must be of the same length.");
       return;
     }
 
@@ -436,20 +434,9 @@ function Main() {
       return;
     }
 
-    const sumOfValues = populationArray.reduce((accumulator, currentValue) => {
-      const numericValue = Number(currentValue);
-      if (!isNaN(numericValue)) {
-        return accumulator + numericValue;
-      }
-      return accumulator;
-    }, 0);
-    
-    if (sumOfValues/ samplingIntervalForPTag> populationArray.length ) {
-      alert("Expected number of samples based on samplinv interval cannot be greater than number of rows.");
-    }
-
     setFinalArray(populationArray);
 
+    console.log(populationArray[0], 'population array ka first element');
     // Run DhruvMUS1 function here with the selected arrays and sampling interval
     if (uniqueIdentifiers.length > 0 && populationArray.length > 0) {
       calculateExpectedSamples(samplingInterval, populationArray);
@@ -670,15 +657,15 @@ function Main() {
             {expectedSamples && (
               <p className={classes.smallp}>
                 Total Population value is{" "}
-                {finalArray.reduce((accumulator, currentValue) => {
+                {(Math.ceil(finalArray.reduce((accumulator, currentValue) => {
                   const numericValue = Number(currentValue);
                   if (!isNaN(numericValue)) {
                     return accumulator + numericValue;
                   }
                   return accumulator;
-                }, 0)}
-                , expected number of samples is {expectedSamples} based on
-                sampling interval {samplingIntervalForPTag}.
+                }, 0)*100)/100).toLocaleString()}
+                , expected number of samples is {expectedSamples.toLocaleString()} based on
+                sampling interval {samplingIntervalForPTag.toLocaleString()}.
               </p>
             )}
           </>
